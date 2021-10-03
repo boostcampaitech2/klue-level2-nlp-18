@@ -1,0 +1,352 @@
+wandb_version: 1
+
+_n_gpu:
+  value: 1
+_name_or_path:
+  value: klue/bert-base
+adafactor:
+  value: 'false'
+adam_beta1:
+  value: 0.6091234846322899
+adam_beta2:
+  value: 0.712228603242079
+adam_epsilon:
+  value: 5.426074575835547e-09
+add_cross_attention:
+  value: 'true'
+attention_probs_dropout_prob:
+  value: 0.16089429854753198
+dataloader_drop_last:
+  value: 'true'
+dataloader_pin_memory:
+  value: 'true'
+ddp_find_unused_parameters:
+  value: None
+debug:
+  value: '[]'
+deepspeed:
+  value: None
+disable_tqdm:
+  value: 'true'
+do_eval:
+  value: 'true'
+do_predict:
+  value: 'false'
+do_sample:
+  value: 'false'
+do_train:
+  value: 'false'
+early_stopping:
+  value: 'false'
+eval_accumulation_steps:
+  value: None
+eval_batch_size:
+  value: 39
+eval_steps:
+  value: 2643
+evaluation_strategy:
+  value: steps
+fp16:
+  value: 'true'
+fp16_backend:
+  value: auto
+fp16_full_eval:
+  value: 'true'
+fp16_opt_level:
+  value: O1
+gradient_accumulation_steps:
+  value: 1
+gradient_checkpointing:
+  value: 'true'
+greater_is_better:
+  value: 'true'
+group_by_length:
+  value: 'true'
+hidden_act:
+  value: gelu
+hidden_dropout_prob:
+  value: 0.13306597324155606
+hidden_size:
+  value: 1027
+id2label.0:
+  value: LABEL_0
+id2label.1:
+  value: LABEL_1
+id2label.10:
+  value: LABEL_10
+id2label.11:
+  value: LABEL_11
+id2label.12:
+  value: LABEL_12
+id2label.13:
+  value: LABEL_13
+id2label.14:
+  value: LABEL_14
+id2label.15:
+  value: LABEL_15
+id2label.16:
+  value: LABEL_16
+id2label.17:
+  value: LABEL_17
+id2label.18:
+  value: LABEL_18
+id2label.19:
+  value: LABEL_19
+id2label.2:
+  value: LABEL_2
+id2label.20:
+  value: LABEL_20
+id2label.21:
+  value: LABEL_21
+id2label.22:
+  value: LABEL_22
+id2label.23:
+  value: LABEL_23
+id2label.24:
+  value: LABEL_24
+id2label.25:
+  value: LABEL_25
+id2label.26:
+  value: LABEL_26
+id2label.27:
+  value: LABEL_27
+id2label.28:
+  value: LABEL_28
+id2label.29:
+  value: LABEL_29
+id2label.3:
+  value: LABEL_3
+id2label.4:
+  value: LABEL_4
+id2label.5:
+  value: LABEL_5
+id2label.6:
+  value: LABEL_6
+id2label.7:
+  value: LABEL_7
+id2label.8:
+  value: LABEL_8
+id2label.9:
+  value: LABEL_9
+ignore_data_skip:
+  value: 'true'
+initializer_range:
+  value: 0.01391554656911947
+intermediate_size:
+  value: 5271
+is_decoder:
+  value: 'false'
+is_encoder_decoder:
+  value: 'false'
+label2id.LABEL_1:
+  value: 1
+label2id.LABEL_10:
+  value: 16
+label2id.LABEL_11:
+  value: 8
+label2id.LABEL_12:
+  value: 19
+label2id.LABEL_13:
+  value: 14
+label2id.LABEL_14:
+  value: 19
+label2id.LABEL_15:
+  value: 15
+label2id.LABEL_16:
+  value: 13
+label2id.LABEL_17:
+  value: 31
+label2id.LABEL_18:
+  value: 21
+label2id.LABEL_19:
+  value: 21
+label2id.LABEL_2:
+  value: 4
+label2id.LABEL_20:
+  value: 12
+label2id.LABEL_21:
+  value: 13
+label2id.LABEL_22:
+  value: 25
+label2id.LABEL_23:
+  value: 27
+label2id.LABEL_24:
+  value: 26
+label2id.LABEL_25:
+  value: 40
+label2id.LABEL_26:
+  value: 27
+label2id.LABEL_27:
+  value: 18
+label2id.LABEL_28:
+  value: 30
+label2id.LABEL_29:
+  value: 48
+label2id.LABEL_3:
+  value: 2
+label2id.LABEL_4:
+  value: 4
+label2id.LABEL_5:
+  value: 5
+label2id.LABEL_6:
+  value: 8
+label2id.LABEL_7:
+  value: 11
+label2id.LABEL_8:
+  value: 16
+label2id.LABEL_9:
+  value: 7
+label_names:
+  value: None
+layer_norm_eps:
+  value: 8.41871771778686e-13
+learning_rate:
+  value: 9.566012870799671e-06
+length_column_name:
+  value: length
+length_penalty:
+  value: 1
+load_best_model_at_end:
+  value: 'true'
+local_rank:
+  value: -2
+log_level:
+  value: -2
+log_level_replica:
+  value: -1
+log_on_each_node:
+  value: 'true'
+logging_dir:
+  value: ./logs
+logging_first_step:
+  value: 'false'
+logging_steps:
+  value: 67
+logging_strategy:
+  value: steps
+lr_scheduler_type:
+  value: linear
+max_grad_norm:
+  value: 1
+max_length:
+  value: 39
+max_position_embeddings:
+  value: 262
+max_steps:
+  value: 0
+metric_for_best_model:
+  value: loss
+model_type:
+  value: bert
+mp_parameters:
+  value: ''
+no_cuda:
+  value: 'false'
+num_attention_heads:
+  value: 22
+num_beam_groups:
+  value: 1
+num_beams:
+  value: 1
+num_hidden_layers:
+  value: 22
+num_return_sequences:
+  value: 1
+num_train_epochs:
+  value: 22
+output_attentions:
+  value: 'true'
+output_dir:
+  value: ./results
+output_hidden_states:
+  value: 'true'
+output_scores:
+  value: 'false'
+overwrite_output_dir:
+  value: 'true'
+past_index:
+  value: 0
+per_device_eval_batch_size:
+  value: 54
+per_device_train_batch_size:
+  value: 28
+per_gpu_eval_batch_size:
+  value: None
+per_gpu_train_batch_size:
+  value: None
+position_embedding_type:
+  value: absolute
+prediction_loss_only:
+  value: 'true'
+push_to_hub:
+  value: 'false'
+push_to_hub_model_id:
+  value: results
+push_to_hub_organization:
+  value: None
+push_to_hub_token:
+  value: None
+remove_invalid_values:
+  value: 'true'
+remove_unused_columns:
+  value: 'true'
+repetition_penalty:
+  value: 2
+report_to:
+  value: '[''wandb'']'
+resume_from_checkpoint:
+  value: None
+return_dict:
+  value: 'false'
+return_dict_in_generate:
+  value: 'true'
+run_name:
+  value: ./results_copy
+save_on_each_node:
+  value: 'false'
+save_steps:
+  value: 5226
+save_strategy:
+  value: steps
+save_total_limit:
+  value: 5
+seed:
+  value: 64
+sharded_ddp:
+  value: '[]'
+skip_memory_metrics:
+  value: 'false'
+temperature:
+  value: 2
+tie_encoder_decoder:
+  value: 'true'
+tie_word_embeddings:
+  value: 'false'
+top_k:
+  value: 57
+top_p:
+  value: 2
+torchscript:
+  value: 'true'
+tpu_metrics_debug:
+  value: 'false'
+tpu_num_cores:
+  value: None
+train_batch_size:
+  value: 31
+transformers_version:
+  value: 4.10.0
+type_vocab_size:
+  value: 1
+use_bfloat16:
+  value: 'false'
+use_cache:
+  value: 'false'
+use_legacy_prediction_loop:
+  value: 'true'
+vocab_size:
+  value: 26389
+warmup_steps:
+  value: 8986
+weight_decay:
+  value: 0.013501439855409803
