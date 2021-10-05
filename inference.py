@@ -48,12 +48,12 @@ def num_to_label(label):
   
   return origin_label
 
-def load_test_dataset(dataset_dir, tokenizer):
+def load_test_dataset(dataset_dir, tokenizer,punct):
   """
     test dataset을 불러온 후,
     tokenizing 합니다.
   """
-  test_dataset = load_data(dataset_dir)
+  test_dataset = load_data(dataset_dir,punct)
   test_label = list(map(int,test_dataset['label'].values))
   # tokenizing dataset
   tokenized_test = tokenized_dataset(test_dataset, tokenizer)
@@ -67,16 +67,22 @@ def main(args):
   # load tokenizer
   Tokenizer_NAME = "klue/bert-base"
   tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
+  if not args.punct:
+    special_tokens_dict = {'additional_special_tokens': ["<S:PER>","</S:PER>","<S:ORG>","</S:ORG:>","<O:PER>", "<O:ORG>", "<O:DAT>", "<O:LOC>", "<O:POH>", "<O:NOH>","</O:PER>", "</O:ORG>", "</O:DAT>", "</O:LOC>", "</O:POH>", "</O:NOH>"]}
+  else:
+    special_tokens_dict = {'additional_special_tokens': ["*PER*","@","*ORG*","#","∧PER∧", "∧ORG∧", "∧DAT∧", "∧LOC∧", "∧POH∧", "∧NOH∧"]}
+  num_added_toks = tokenizer.add_special_tokens(special_tokens_dict)
 
   ## load my model
   MODEL_NAME = args.model_dir # model dir.
   model = AutoModelForSequenceClassification.from_pretrained(args.model_dir)
+  model.resize_token_embeddings(len(tokenizer))
   model.parameters
   model.to(device)
 
   ## load test datset
   test_dataset_dir = "../dataset/test/test_data.csv"
-  test_id, test_dataset, test_label = load_test_dataset(test_dataset_dir, tokenizer)
+  test_id, test_dataset, test_label = load_test_dataset(test_dataset_dir, tokenizer,args.punct)
   Re_test_dataset = RE_Dataset(test_dataset ,test_label)
 
   ## predict answer
@@ -88,7 +94,7 @@ def main(args):
   # 아래 directory와 columns의 형태는 지켜주시기 바랍니다.
   output = pd.DataFrame({'id':test_id,'pred_label':pred_answer,'probs':output_prob,})
 
-  output.to_csv('./prediction/submission_64.csv', index=False) # 최종적으로 완성된 예측한 라벨 csv 파일 형태로 저장.
+  output.to_csv('./prediction/submission_punct.csv', index=False) # 최종적으로 완성된 예측한 라벨 csv 파일 형태로 저장.
   #### 필수!! ##############################################
   print('---- Finish! ----')
 
@@ -101,10 +107,15 @@ def cv_ensemble(args):
   # load tokenizer
   Tokenizer_NAME = "klue/bert-base"
   tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
+  if not args.punct:
+    special_tokens_dict = {'additional_special_tokens': ["<S:PER>","</S:PER>","<S:ORG>","</S:ORG:>","<O:PER>", "<O:ORG>", "<O:DAT>", "<O:LOC>", "<O:POH>", "<O:NOH>","</O:PER>", "</O:ORG>", "</O:DAT>", "</O:LOC>", "</O:POH>", "</O:NOH>"]}
+  else:
+    special_tokens_dict = {'additional_special_tokens': ["*PER*","@","*ORG*","#","∧PER∧", "∧ORG∧", "∧DAT∧", "∧LOC∧", "∧POH∧", "∧NOH∧"]}
+  num_added_toks = tokenizer.add_special_tokens(special_tokens_dict)
 
   ## load test datset
   test_dataset_dir = "../dataset/test/test_data.csv"
-  test_id, test_dataset, test_label = load_test_dataset(test_dataset_dir, tokenizer)
+  test_id, test_dataset, test_label = load_test_dataset(test_dataset_dir, tokenizer,args.punct)
   Re_test_dataset = RE_Dataset(test_dataset ,test_label)
 
   MODEL_NAME = args.cv_model_dir 
@@ -114,6 +125,7 @@ def cv_ensemble(args):
     print("cv #",i+1)
 
     model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME+ "/" + str(i))
+    model.resize_token_embeddings(len(tokenizer))
     model.parameters
     model.to(device)
 
@@ -134,7 +146,7 @@ def cv_ensemble(args):
   # 아래 directory와 columns의 형태는 지켜주시기 바랍니다.
   output = pd.DataFrame({'id':test_id,'pred_label':pred_answer,'probs':cv_prob,})
 
-  output.to_csv('./prediction/submission_cv.csv', index=False) # 최종적으로 완성된 예측한 라벨 csv 파일 형태로 저장.
+  output.to_csv('./prediction/submission_entity.csv', index=False) # 최종적으로 완성된 예측한 라벨 csv 파일 형태로 저장.
   #### 필수!! ##############################################
   print('---- Finish! ----')
 
@@ -146,10 +158,10 @@ if __name__ == '__main__':
   parser.add_argument('--cv_model_dir', type=str, default="./best_model/cv")
   parser.add_argument('--n_split', type=int, default=5)
   parser.add_argument('--cv', type=bool, default=False)
+  parser.add_argument('--punct', type=bool, default=False)
   args = parser.parse_args()
   print(args)
   if args.cv==True:
     cv_ensemble(args)
   else:
     main(args)
-  
