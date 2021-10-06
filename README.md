@@ -59,3 +59,11 @@ git pull origin
 https://git-scm.com/book/ko/v2
 
 이 문서는 박진영_T2096 캠퍼님께서 작성해 주셨고 백운경_T2252 캠퍼가 수정했습니다. 🤓
+
+
+### train.py
+--cv True (default :False) : Stratified KFold 실행
+--n_split (default : 5) : Fold 수 지정
+--punct True (default : False) : Typed Entity Marker (punct)
+
+Typed Entity Marker - 일반토큰으로 추가
