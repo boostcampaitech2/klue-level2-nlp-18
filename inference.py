@@ -1,6 +1,6 @@
 from transformers import AutoTokenizer, AutoConfig, AutoModelForSequenceClassification, Trainer, TrainingArguments
 from torch.utils.data import DataLoader
-from load_data_aeda_py import *
+from load_data import *
 import pandas as pd
 import torch
 import torch.nn.functional as F
@@ -9,6 +9,27 @@ import pickle as pickle
 import numpy as np
 import argparse
 from tqdm import tqdm
+
+def pull_out_dictionary(df_input) :
+  df = df_input.copy()
+  df['subject_entity'] = df['subject_entity'].apply(lambda x: eval(x))
+  df['object_entity'] = df['object_entity'].apply(lambda x: eval(x))
+  
+  df = df.assign(
+    subject_word=lambda x: x['subject_entity'].apply(lambda x: x['word']),
+    subject_start_idx=lambda x: x['subject_entity'].apply(lambda x: x['start_idx']),
+    subject_end_idx=lambda x: x['subject_entity'].apply(lambda x: x['end_idx']),
+    subject_type=lambda x: x['subject_entity'].apply(lambda x: x['type']),
+
+    # object_entity
+    object_word=lambda x: x['object_entity'].apply(lambda x: x['word']),
+    object_start_idx=lambda x: x['object_entity'].apply(lambda x: x['start_idx']),
+    object_end_idx=lambda x: x['object_entity'].apply(lambda x: x['end_idx']),
+    object_type=lambda x: x['object_entity'].apply(lambda x: x['type']),
+  )
+  df = df.drop(['subject_entity', 'object_entity'], axis = 1)
+  return df
+
 
 def inference(model, tokenized_sent, device):
   """
@@ -24,7 +45,7 @@ def inference(model, tokenized_sent, device):
       outputs = model(
           input_ids=data['input_ids'].to(device),
           attention_mask=data['attention_mask'].to(device),
-          token_type_ids=data['token_type_ids'].to(device)
+          #token_type_ids=data['token_type_ids'].to(device)
           )
     logits = outputs[0]
     prob = F.softmax(logits, dim=-1).detach().cpu().numpy()
@@ -48,14 +69,22 @@ def num_to_label(label):
   
   return origin_label
 
-def load_test_dataset(dataset_dir, tokenizer,punct):
+def load_test_dataset(dataset_dir, tokenizer):
   """
     test dataset을 불러온 후,
     tokenizing 합니다.
   """
-  test_dataset = load_data(dataset_dir,punct)
+  test_dataset = pd.read_csv("../dataset/test/test_data.csv")
+  test_dataset = pull_out_dictionary(test_dataset)  
   test_label = list(map(int,test_dataset['label'].values))
-  # tokenizing dataset
+  
+  # token_data, type_data = add_special_sentence(train_dataset)
+  # dict_type = dict({'additional_special_tokens': type_data})  
+  
+  
+  # test_dataset = load_data(dataset_dir)
+  # test_label = list(map(int,test_dataset['label'].values))
+  # # tokenizing dataset
   tokenized_test = tokenized_dataset(test_dataset, tokenizer)
   return test_dataset['id'], tokenized_test, test_label
 
@@ -65,24 +94,24 @@ def main(args):
   """
   device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
   # load tokenizer
-  Tokenizer_NAME = "klue/bert-base"
+  Tokenizer_NAME = "klue/roberta-large"
   tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
   if not args.punct:
-    special_tokens_dict = {'additional_special_tokens': ["<S:PER>","</S:PER>","<S:ORG>","</S:ORG:>","<O:PER>", "<O:ORG>", "<O:DAT>", "<O:LOC>", "<O:POH>", "<O:NOH>","</O:PER>", "</O:ORG>", "</O:DAT>", "</O:LOC>", "</O:POH>", "</O:NOH>"]}
+      special_tokens_dict = {'additional_special_tokens': ["<S:PER>","</S:PER>","<S:ORG>","</S:ORG:>","<O:PER>", "<O:ORG>", "<O:DAT>", "<O:LOC>", "<O:POH>", "<O:NOH>","</O:PER>", "</O:ORG>", "</O:DAT>", "</O:LOC>", "</O:POH>", "</O:NOH>"]}
+      #tokenizer.add_tokens(["<S:PER>","</S:PER>","<S:ORG>","</S:ORG:>","<O:PER>", "<O:ORG>", "<O:DAT>", "<O:LOC>", "<O:POH>", "<O:NOH>","</O:PER>", "</O:ORG>", "</O:DAT>", "</O:LOC>", "</O:POH>", "</O:NOH>"])
   else:
-    special_tokens_dict = {'additional_special_tokens': ["*PER*","@","*ORG*","#","∧PER∧", "∧ORG∧", "∧DAT∧", "∧LOC∧", "∧POH∧", "∧NOH∧"]}
+      special_tokens_dict = {'additional_special_tokens': ["*PER*","@","*ORG*","#","∧PER∧", "∧ORG∧", "∧DAT∧", "∧LOC∧", "∧POH∧", "∧NOH∧"]}
+      #tokenizer.add_tokens(["*PER*","@","*ORG*","#","∧PER∧", "∧ORG∧", "∧DAT∧", "∧LOC∧", "∧POH∧", "∧NOH∧"])
   num_added_toks = tokenizer.add_special_tokens(special_tokens_dict)
-
   ## load my model
   MODEL_NAME = args.model_dir # model dir.
   model = AutoModelForSequenceClassification.from_pretrained(args.model_dir)
-  model.resize_token_embeddings(len(tokenizer))
   model.parameters
   model.to(device)
 
   ## load test datset
   test_dataset_dir = "../dataset/test/test_data.csv"
-  test_id, test_dataset, test_label = load_test_dataset(test_dataset_dir, tokenizer,args.punct)
+  test_id, test_dataset, test_label = load_test_dataset(test_dataset_dir, tokenizer)
   Re_test_dataset = RE_Dataset(test_dataset ,test_label)
 
   ## predict answer
@@ -94,74 +123,14 @@ def main(args):
   # 아래 directory와 columns의 형태는 지켜주시기 바랍니다.
   output = pd.DataFrame({'id':test_id,'pred_label':pred_answer,'probs':output_prob,})
 
-  output.to_csv('./prediction/submission_punct.csv', index=False) # 최종적으로 완성된 예측한 라벨 csv 파일 형태로 저장.
+  output.to_csv('./prediction/submission.csv', index=False) # 최종적으로 완성된 예측한 라벨 csv 파일 형태로 저장.
   #### 필수!! ##############################################
   print('---- Finish! ----')
-
-
-def cv_ensemble(args):
-  """
-    주어진 dataset csv 파일과 같은 형태일 경우 inference 가능한 코드입니다.
-  """
-  device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-  # load tokenizer
-  Tokenizer_NAME = "klue/bert-base"
-  tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
-  if not args.punct:
-    special_tokens_dict = {'additional_special_tokens': ["<S:PER>","</S:PER>","<S:ORG>","</S:ORG:>","<O:PER>", "<O:ORG>", "<O:DAT>", "<O:LOC>", "<O:POH>", "<O:NOH>","</O:PER>", "</O:ORG>", "</O:DAT>", "</O:LOC>", "</O:POH>", "</O:NOH>"]}
-  else:
-    special_tokens_dict = {'additional_special_tokens': ["*PER*","@","*ORG*","#","∧PER∧", "∧ORG∧", "∧DAT∧", "∧LOC∧", "∧POH∧", "∧NOH∧"]}
-  num_added_toks = tokenizer.add_special_tokens(special_tokens_dict)
-
-  ## load test datset
-  test_dataset_dir = "../dataset/test/test_data.csv"
-  test_id, test_dataset, test_label = load_test_dataset(test_dataset_dir, tokenizer,args.punct)
-  Re_test_dataset = RE_Dataset(test_dataset ,test_label)
-
-  MODEL_NAME = args.cv_model_dir 
-
-  ## load my model
-  for i in range(args.n_split):
-    print("cv #",i+1)
-
-    model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME+ "/" + str(i))
-    model.resize_token_embeddings(len(tokenizer))
-    model.parameters
-    model.to(device)
-
-    ## predict answer
-    pred_answer, output_prob = inference(model, Re_test_dataset, device) # model에서 class 추론
-
-    if i==0:
-      cv_prob = np.array(output_prob)
-    else:
-      cv_prob += np.array(output_prob)
- 
-  cv_prob/=args.n_split
-  pred_answer = [np.argmax(cv_prob[idx], axis=-1) for idx in range(len(cv_prob))]
-  pred_answer = num_to_label(pred_answer) # 숫자로 된 class를 원래 문자열 라벨로 변환.
-  cv_prob = cv_prob.tolist()
-  ## make csv file with predicted answer
-  #########################################################
-  # 아래 directory와 columns의 형태는 지켜주시기 바랍니다.
-  output = pd.DataFrame({'id':test_id,'pred_label':pred_answer,'probs':cv_prob,})
-
-  output.to_csv('./prediction/submission_entity.csv', index=False) # 최종적으로 완성된 예측한 라벨 csv 파일 형태로 저장.
-  #### 필수!! ##############################################
-  print('---- Finish! ----')
-
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   
   # model dir
   parser.add_argument('--model_dir', type=str, default="./best_model")
-  parser.add_argument('--cv_model_dir', type=str, default="./best_model/cv")
-  parser.add_argument('--n_split', type=int, default=5)
-  parser.add_argument('--cv', type=bool, default=False)
-  parser.add_argument('--punct', type=bool, default=False)
   args = parser.parse_args()
   print(args)
-  if args.cv==True:
-    cv_ensemble(args)
-  else:
-    main(args)
+  main(args)
