@@ -1,6 +1,6 @@
 from transformers import AutoTokenizer, AutoConfig, AutoModelForSequenceClassification, Trainer, TrainingArguments
 from torch.utils.data import DataLoader
-from load_data import *
+from load_data_copy import *
 import pandas as pd
 import torch
 import torch.nn.functional as F
@@ -9,27 +9,6 @@ import pickle as pickle
 import numpy as np
 import argparse
 from tqdm import tqdm
-
-def pull_out_dictionary(df_input) :
-  df = df_input.copy()
-  df['subject_entity'] = df['subject_entity'].apply(lambda x: eval(x))
-  df['object_entity'] = df['object_entity'].apply(lambda x: eval(x))
-  
-  df = df.assign(
-    subject_word=lambda x: x['subject_entity'].apply(lambda x: x['word']),
-    subject_start_idx=lambda x: x['subject_entity'].apply(lambda x: x['start_idx']),
-    subject_end_idx=lambda x: x['subject_entity'].apply(lambda x: x['end_idx']),
-    subject_type=lambda x: x['subject_entity'].apply(lambda x: x['type']),
-
-    # object_entity
-    object_word=lambda x: x['object_entity'].apply(lambda x: x['word']),
-    object_start_idx=lambda x: x['object_entity'].apply(lambda x: x['start_idx']),
-    object_end_idx=lambda x: x['object_entity'].apply(lambda x: x['end_idx']),
-    object_type=lambda x: x['object_entity'].apply(lambda x: x['type']),
-  )
-  df = df.drop(['subject_entity', 'object_entity'], axis = 1)
-  return df
-
 
 def inference(model, tokenized_sent, device):
   """
@@ -74,17 +53,9 @@ def load_test_dataset(dataset_dir, tokenizer):
     test dataset을 불러온 후,
     tokenizing 합니다.
   """
-  test_dataset = pd.read_csv("../dataset/test/test_data.csv")
-  test_dataset = pull_out_dictionary(test_dataset)  
+  test_dataset = load_data(dataset_dir)
   test_label = list(map(int,test_dataset['label'].values))
-  
-  # token_data, type_data = add_special_sentence(train_dataset)
-  # dict_type = dict({'additional_special_tokens': type_data})  
-  
-  
-  # test_dataset = load_data(dataset_dir)
-  # test_label = list(map(int,test_dataset['label'].values))
-  # # tokenizing dataset
+  # tokenizing dataset
   tokenized_test = tokenized_dataset(test_dataset, tokenizer)
   return test_dataset['id'], tokenized_test, test_label
 
@@ -94,8 +65,7 @@ def main(args):
   """
   device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
   # load tokenizer
-  Tokenizer_NAME = "klue/roberta-large"
-  # Tokenizer_NAME = "klue/bert-base"
+  Tokenizer_NAME = "klue/bert-base"
   tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
 
   ## load my model
@@ -118,14 +88,14 @@ def main(args):
   # 아래 directory와 columns의 형태는 지켜주시기 바랍니다.
   output = pd.DataFrame({'id':test_id,'pred_label':pred_answer,'probs':output_prob,})
 
-  output.to_csv('./prediction/submission.csv', index=False) # 최종적으로 완성된 예측한 라벨 csv 파일 형태로 저장.
+  output.to_csv('./prediction_copy/submission.csv', index=False) # 최종적으로 완성된 예측한 라벨 csv 파일 형태로 저장.
   #### 필수!! ##############################################
   print('---- Finish! ----')
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   
   # model dir
-  parser.add_argument('--model_dir', type=str, default="./best_model")
+  parser.add_argument('--model_dir', type=str, default="./best_model_copy")
   args = parser.parse_args()
   print(args)
   main(args)
