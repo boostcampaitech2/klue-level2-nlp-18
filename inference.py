@@ -68,12 +68,12 @@ def main(args):
   Tokenizer_NAME = "klue/bert-base"
   tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
   if not args.punct:
-    #special_tokens_dict = {'additional_special_tokens': ["<S:PER>","</S:PER>","<S:ORG>","</S:ORG:>","<O:PER>", "<O:ORG>", "<O:DAT>", "<O:LOC>", "<O:POH>", "<O:NOH>","</O:PER>", "</O:ORG>", "</O:DAT>", "</O:LOC>", "</O:POH>", "</O:NOH>"]}
-    tokenizer.add_tokens(["<S:PER>","</S:PER>","<S:ORG>","</S:ORG:>","<O:PER>", "<O:ORG>", "<O:DAT>", "<O:LOC>", "<O:POH>", "<O:NOH>","</O:PER>", "</O:ORG>", "</O:DAT>", "</O:LOC>", "</O:POH>", "</O:NOH>"])
+    special_tokens_dict = {'additional_special_tokens': ["<S:PER>","</S:PER>","<S:ORG>","</S:ORG:>","<O:PER>", "<O:ORG>", "<O:DAT>", "<O:LOC>", "<O:POH>", "<O:NOH>","</O:PER>", "</O:ORG>", "</O:DAT>", "</O:LOC>", "</O:POH>", "</O:NOH>"]}
+    #tokenizer.add_tokens(["<S:PER>","</S:PER>","<S:ORG>","</S:ORG:>","<O:PER>", "<O:ORG>", "<O:DAT>", "<O:LOC>", "<O:POH>", "<O:NOH>","</O:PER>", "</O:ORG>", "</O:DAT>", "</O:LOC>", "</O:POH>", "</O:NOH>"])
   else:
-    #special_tokens_dict = {'additional_special_tokens': ["*PER*","@","*ORG*","#","∧PER∧", "∧ORG∧", "∧DAT∧", "∧LOC∧", "∧POH∧", "∧NOH∧"]}
-    tokenizer.add_tokens(["*PER*","@","*ORG*","#","∧PER∧", "∧ORG∧", "∧DAT∧", "∧LOC∧", "∧POH∧", "∧NOH∧"])
-  #num_added_toks = tokenizer.add_special_tokens(special_tokens_dict)
+    special_tokens_dict = {'additional_special_tokens': ["*PER*","@","*ORG*","#","∧PER∧", "∧ORG∧", "∧DAT∧", "∧LOC∧", "∧POH∧", "∧NOH∧"]}
+    #tokenizer.add_tokens(["*PER*","@","*ORG*","#","∧PER∧", "∧ORG∧", "∧DAT∧", "∧LOC∧", "∧POH∧", "∧NOH∧"])
+  num_added_toks = tokenizer.add_special_tokens(special_tokens_dict)
 
   ## load my model
   MODEL_NAME = args.model_dir # model dir.
@@ -110,12 +110,12 @@ def cv_ensemble(args):
   Tokenizer_NAME = "klue/bert-base"
   tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
   if not args.punct:
-    #special_tokens_dict = {'additional_special_tokens': ["<S:PER>","</S:PER>","<S:ORG>","</S:ORG:>","<O:PER>", "<O:ORG>", "<O:DAT>", "<O:LOC>", "<O:POH>", "<O:NOH>","</O:PER>", "</O:ORG>", "</O:DAT>", "</O:LOC>", "</O:POH>", "</O:NOH>"]}
-    tokenizer.add_tokens(["<S:PER>","</S:PER>","<S:ORG>","</S:ORG:>","<O:PER>", "<O:ORG>", "<O:DAT>", "<O:LOC>", "<O:POH>", "<O:NOH>","</O:PER>", "</O:ORG>", "</O:DAT>", "</O:LOC>", "</O:POH>", "</O:NOH>"])
+    special_tokens_dict = {'additional_special_tokens': ["<S:PER>","</S:PER>","<S:ORG>","</S:ORG:>","<O:PER>", "<O:ORG>", "<O:DAT>", "<O:LOC>", "<O:POH>", "<O:NOH>","</O:PER>", "</O:ORG>", "</O:DAT>", "</O:LOC>", "</O:POH>", "</O:NOH>"]}
+    #tokenizer.add_tokens(["<S:PER>","</S:PER>","<S:ORG>","</S:ORG:>","<O:PER>", "<O:ORG>", "<O:DAT>", "<O:LOC>", "<O:POH>", "<O:NOH>","</O:PER>", "</O:ORG>", "</O:DAT>", "</O:LOC>", "</O:POH>", "</O:NOH>"])
   else:
-    #special_tokens_dict = {'additional_special_tokens': ["*PER*","@","*ORG*","#","∧PER∧", "∧ORG∧", "∧DAT∧", "∧LOC∧", "∧POH∧", "∧NOH∧"]}
-    tokenizer.add_tokens(["*PER*","@","*ORG*","#","∧PER∧", "∧ORG∧", "∧DAT∧", "∧LOC∧", "∧POH∧", "∧NOH∧"])
-  #num_added_toks = tokenizer.add_special_tokens(special_tokens_dict)
+    special_tokens_dict = {'additional_special_tokens': ["*PER*","@","*ORG*","#","∧PER∧", "∧ORG∧", "∧DAT∧", "∧LOC∧", "∧POH∧", "∧NOH∧"]}
+    #tokenizer.add_tokens(["*PER*","@","*ORG*","#","∧PER∧", "∧ORG∧", "∧DAT∧", "∧LOC∧", "∧POH∧", "∧NOH∧"])
+  num_added_toks = tokenizer.add_special_tokens(special_tokens_dict)
 
   ## load test datset
   test_dataset_dir = "../dataset/test/test_data.csv"
