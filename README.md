@@ -1,5 +1,5 @@
 # (Boost Camp AI Tech P-Stage) KLUE
-## NLP-mafia
+## TEAM NLP-mafia
 
 ## 🔎 대회 개요
 ![image](https://user-images.githubusercontent.com/68593821/136526930-1da880aa-ae38-497c-a312-3b3ffdd97925.png)
@@ -28,8 +28,8 @@ relation: 단체:별칭 (org:alternate_names)
   - micro-precision과 micro-recall의 조화 평균이며, 각 샘플에 동일한 importance를 부여해, 샘플이 많은 클래스에 더 많은 가중치를 부여
   - 데이터 분포상 많은 부분을 차지하고 있는 no_relation class는 제외하고 F1 score가 계산
 
-![image](https://user-images.githubusercontent.com/68593821/136528347-dc7cf952-86b9-4d08-9e90-bf24b3e36c6e.png)
-![image](https://user-images.githubusercontent.com/68593821/136528364-08bdbdab-a922-48bd-91d3-7b64cfe8aaaa.png)
+![image](https://user-images.githubusercontent.com/68593821/136528347-dc7cf952-86b9-4d08-9e90-bf24b3e36c6e.png)<br>
+![image](https://user-images.githubusercontent.com/68593821/136528364-08bdbdab-a922-48bd-91d3-7b64cfe8aaaa.png)<br>
 ![image](https://user-images.githubusercontent.com/68593821/136528383-f27d4fa0-b95f-4584-a952-08afdae69d46.png)
 
 ## 📁 Data
