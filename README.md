@@ -65,5 +65,3 @@ https://git-scm.com/book/ko/v2
 --cv True (default :False) : Stratified KFold 실행<br>
 --n_split (default : 5) : Fold 수 지정<br>
 --punct True (default : False) : Typed Entity Marker (punct)<br>
-
-Typed Entity Marker - 일반토큰으로 추가
