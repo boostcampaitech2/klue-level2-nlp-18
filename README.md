@@ -1,5 +1,5 @@
 # (Boost Camp AI Tech P-Stage) KLUE
-## TEAM NLP-mafia
+## TEAM NLP-mafia 🔫
 
 ## 🔎 대회 개요
 ![image](https://user-images.githubusercontent.com/68593821/136526930-1da880aa-ae38-497c-a312-3b3ffdd97925.png)
@@ -52,9 +52,9 @@ relation: 단체:별칭 (org:alternate_names)
  - ainize/klue-bert-base-mrc
 
 ### Typed Entity Marker
- - typed entity marker
+ - typed entity marker<br>
   ``` <S:PER>이순신 </S:PER> ```
- - typed entity marker (punct)
+ - typed entity marker (punct)<br>
    ``` @ * PER * 이순신 @ ```
    
 ### Stratified K-Fold
